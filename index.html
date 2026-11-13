@@ -1,357 +1,266 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gestão à Vista</title>
+<meta name="theme-color" content="#173b59">
+<title>Gestão à Vista — Controle de Produção</title>
 <style>
-:root {
-  --azul:#163b5c;
-  --azul2:#245779;
-  --fundo:#f1f4f7;
-  --borda:#d5dde5;
-  --verde:#d9f2df;
-  --vermelho:#fbe1df;
-  --amarelo:#fff0c2;
-}
-* { box-sizing:border-box; }
-body {
-  margin:0;
-  font-family:Arial,sans-serif;
-  color:#1d2935;
-  background:var(--fundo);
-}
-header {
-  background:var(--azul);
-  color:white;
-  padding:20px 14px;
-  text-align:center;
-}
-header h1 { margin:0 0 6px; font-size:24px; }
-header p { margin:0; font-size:13px; }
-main { max-width:1200px; margin:auto; padding:12px; }
-.panel {
-  background:white;
-  padding:15px;
-  border-radius:10px;
-  margin-bottom:14px;
-  box-shadow:0 2px 7px #102a4310;
-}
-h2 { font-size:18px; margin:0 0 14px; color:var(--azul); }
-.fields {
-  display:grid;
-  grid-template-columns:repeat(3,minmax(0,1fr));
-  gap:12px;
-}
-label { display:block; font-size:12px; font-weight:bold; }
-input,select,button {
-  font:inherit;
-  border-radius:6px;
-}
-input,select {
-  width:100%;
-  min-width:0;
-  padding:10px;
-  margin-top:5px;
-  border:1px solid #bbc7d2;
-  background:white;
-}
-.table-wrap { overflow-x:auto; }
-table {
-  border-collapse:collapse;
-  width:100%;
-  min-width:850px;
-  font-size:13px;
-}
-th,td {
-  border:1px solid var(--borda);
-  padding:7px;
-  text-align:center;
-}
-th { background:var(--azul); color:white; }
-td input { margin:0; padding:8px 5px; }
-td .hora { min-width:90px; }
-td .numero { min-width:80px; }
-td .motivo { min-width:145px; }
-.resultado { font-weight:bold; }
-.bom { background:var(--verde); }
-.alerta { background:var(--amarelo); }
-.ruim { background:var(--vermelho); }
-.resumos {
-  display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
-  gap:10px;
-}
-.card {
-  padding:13px;
-  border-radius:8px;
-  background:#edf3f8;
-  border:1px solid var(--borda);
-}
-.card span { display:block; font-size:12px; }
-.card strong { display:block; font-size:22px; margin-top:7px; }
-.botoes { display:flex; flex-wrap:wrap; gap:9px; }
-button {
-  padding:11px 14px;
-  border:0;
-  background:var(--azul);
-  color:white;
-  font-weight:bold;
-  cursor:pointer;
-}
-button.secundario { background:#e4ebf1; color:#19364d; }
-button.perigo { background:#a83232; }
-#estado { font-size:12px; color:#526273; margin-top:10px; }
-.nota { font-size:12px; color:#586777; }
-@media(max-width:650px) {
-  .fields { grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .resumos { grid-template-columns:repeat(2,minmax(0,1fr)); }
-  header h1 { font-size:21px; }
-  main { padding:8px; }
-  .panel { padding:11px; }
-}
-@media(max-width:380px) {
-  .fields { grid-template-columns:1fr; }
-}
-@media print {
-  body { background:white; }
-  .botoes,.nota,#estado { display:none; }
-  main { max-width:none; }
-}
+:root{--navy:#173b59;--blue:#245a7e;--bg:#eef2f5;--line:#cbd5df;--ink:#1f2d3a;--green:#dff3e5;--red:#fde4e2;--yellow:#fff2cc}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:14px Arial,Helvetica,sans-serif}
+header{background:var(--navy);color:#fff;text-align:center;padding:18px 12px}
+header h1{margin:0;font-size:25px;letter-spacing:.6px}
+header p{margin:6px 0 0;font-size:12px;letter-spacing:1px}
+main{max-width:1500px;margin:auto;padding:12px}
+.panel{background:#fff;border:1px solid #e0e6eb;border-radius:10px;padding:14px;margin-bottom:12px;box-shadow:0 2px 8px #132b3c0a}
+h2{font-size:17px;color:var(--navy);margin:0 0 12px}
+.fields{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+label{font-size:12px;font-weight:700;display:block}
+input,select,button{font:inherit}
+input,select{width:100%;min-width:0;margin-top:5px;padding:9px;border:1px solid #b9c6d1;border-radius:5px;background:white;color:var(--ink)}
+.table-wrap{overflow:auto;border-radius:6px}
+table{border-collapse:collapse;width:100%;min-width:1080px;font-size:12px}
+th,td{border:1px solid var(--line);padding:6px;text-align:center}
+th{background:var(--navy);color:white;white-space:nowrap}
+td input{margin:0;padding:8px 5px;border-radius:4px}
+td .time{min-width:92px}td .code{min-width:120px}td .num{min-width:80px}td .reason{min-width:145px}
+.delta,.accum{font-weight:700;white-space:nowrap}
+.good{background:var(--green)}.bad{background:var(--red)}.neutral{background:#f5f7f9}
+.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
+.metric{border:1px solid var(--line);border-radius:8px;padding:12px;background:#f5f8fa}
+.metric small{display:block;color:#536575;font-size:12px}
+.metric strong{display:block;font-size:22px;margin-top:6px}
+.product-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px}
+.product-card{border:1px solid var(--line);border-radius:8px;padding:12px}
+.product-card h3{font-size:14px;color:var(--navy);margin:0 0 9px;overflow-wrap:anywhere}
+.product-card p{margin:5px 0}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+button{border:0;border-radius:6px;padding:11px 14px;background:var(--navy);color:#fff;font-weight:700;cursor:pointer}
+button.secondary{background:#e4ebf1;color:#20394c}
+button.danger{background:#a73333}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #2c81b8;outline-offset:2px}
+.hint{font-size:12px;color:#5b6c79;line-height:1.45}
+#status{font-size:12px;color:#526273;margin-top:10px;min-height:15px}
+@media(max-width:760px){main{padding:8px}.panel{padding:10px}.fields{grid-template-columns:repeat(2,minmax(0,1fr))}.summary{grid-template-columns:repeat(2,minmax(0,1fr))}header h1{font-size:21px}}
+@media(max-width:380px){.fields{grid-template-columns:1fr}.metric strong{font-size:19px}}
+@media print{body{background:#fff}#rows tr.empty-row{display:none}main{max-width:none;padding:0}.panel{box-shadow:none;break-inside:avoid}.actions,#status,.hint.no-print{display:none}input,select{border:0;padding:2px;appearance:none}header{print-color-adjust:exact;-webkit-print-color-adjust:exact}th{print-color-adjust:exact;-webkit-print-color-adjust:exact}table{min-width:0;font-size:9px}td,th{padding:3px}}
 </style>
 </head>
 <body>
-<header>
-  <h1>GESTÃO À VISTA</h1>
-  <p>CONTROLE DE PRODUÇÃO DIÁRIO</p>
-</header>
-
+<header><h1>GESTÃO À VISTA</h1><p>CONTROLE DE PRODUÇÃO DIÁRIO</p></header>
 <main>
 <section class="panel">
-  <h2>Identificação da produção</h2>
-  <div class="fields">
-    <label>Data
-      <input id="data" type="date">
-    </label>
-    <label>Linha
-      <input id="linha" placeholder="Ex.: Linha 01">
-    </label>
-    <label>Turno
-      <select id="turno">
-        <option value="">Selecione</option>
-        <option>1º turno</option>
-        <option>2º turno</option>
-        <option>3º turno</option>
-        <option>Comercial</option>
-      </select>
-    </label>
-    <label>Responsável
-      <input id="responsavel" placeholder="Nome">
-    </label>
-    <label>Código do produto
-      <input id="produto" placeholder="Código">
-    </label>
-    <label>Lote de referência
-      <input id="lote" placeholder="Lote">
-    </label>
-  </div>
+<h2>Identificação do turno</h2>
+<div class="fields">
+<label>Data<input id="date" type="date"></label>
+<label>Linha<input id="line" placeholder="Ex.: 6T"></label>
+<label>Turno<select id="shift"><option value="">Selecione</option><option>1º</option><option>2º</option><option>3º</option><option>Comercial</option></select></label>
+<label>Responsável<input id="responsible" placeholder="Nome do responsável"></label>
+</div>
 </section>
-
 <section class="panel">
-  <h2>Lançamentos por intervalo</h2>
-  <p class="nota">Preencha a meta e a produção de cada intervalo. A diferença é calculada como produção realizada menos meta.</p>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>#</th><th>Início</th><th>Fim</th>
-          <th>Meta</th><th>Realizado</th><th>Diferença</th>
-          <th>Acumulado</th><th>Motivo da parada</th><th>Parada (min)</th>
-        </tr>
-      </thead>
-      <tbody id="linhas"></tbody>
-      <tfoot>
-        <tr>
-          <th colspan="3">TOTAL</th>
-          <th id="totalMeta">0</th>
-          <th id="totalReal">0</th>
-          <th id="totalDif">0</th>
-          <th id="totalAcum">0</th>
-          <th>Paradas</th>
-          <th id="totalParada">0</th>
-        </tr>
-      </tfoot>
-    </table>
-  </div>
+<h2>Controle por intervalo</h2>
+<p class="hint">Comece com poucas linhas e use “Adicionar linha” conforme necessário. Linhas sem preenchimento não aparecem no PDF. O acumulado reinicia automaticamente quando o código do produto muda em relação à linha anterior preenchida. Os totais abaixo ficam separados por produto.</p>
+<div class="table-wrap">
+<table>
+<thead><tr><th>#</th><th>Início</th><th>Fim</th><th>Código do produto</th><th>Planejado</th><th>Realizado</th><th>Delta</th><th>Acumulado do produto</th><th>Motivo da parada</th><th>Tempo parado (min)</th><th>Qtd. HC</th></tr></thead>
+<tbody id="rows"></tbody>
+</table>
+</div>
 </section>
-
 <section class="panel">
-  <h2>Resumo da produção</h2>
-  <div class="resumos">
-    <div class="card"><span>Meta total</span><strong id="rMeta">0</strong></div>
-    <div class="card"><span>Produção realizada</span><strong id="rReal">0</strong></div>
-    <div class="card"><span>Diferença</span><strong id="rDif">0</strong></div>
-    <div class="card"><span>Atingimento</span><strong id="rPerc">0%</strong></div>
-  </div>
+<h2>Resumo do turno</h2>
+<div class="summary">
+<div class="metric"><small>Planejado total</small><strong id="sumPlan">0</strong></div>
+<div class="metric"><small>Realizado total</small><strong id="sumActual">0</strong></div>
+<div class="metric"><small>Delta total</small><strong id="sumDelta">0</strong></div>
+<div class="metric"><small>Atingimento geral</small><strong id="sumRate">0%</strong></div>
+<div class="metric"><small>Tempo total parado</small><strong id="sumDowntime">0 min</strong></div>
+<div class="metric"><small>Registros de parada</small><strong id="sumStops">0</strong></div>
+</div>
 </section>
-
 <section class="panel">
-  <h2>Ações</h2>
-  <div class="botoes">
-    <button id="salvar">Salvar registros</button>
-    <button id="limpar" class="secundario">Limpar formulário</button>
-    <button id="imprimir" class="secundario">Imprimir / PDF</button>
-    <button id="csv" class="secundario">Exportar CSV</button>
-  </div>
-  <div id="estado">Preencha os dados e toque em Salvar registros.</div>
-  <p class="nota">Nesta primeira versão, os registros ficam salvos neste navegador e neste aparelho. Ainda não são sincronizados entre celulares.</p>
+<h2>Resumo por produto</h2>
+<div id="byProduct" class="product-summary"><p class="hint">Os produtos aparecerão aqui conforme os códigos forem preenchidos.</p></div>
+</section>
+<section class="panel">
+<h2>Ações</h2>
+<div class="actions">
+<button id="addRow">+ Adicionar linha</button>
+<button id="removeRow" class="secondary">− Remover última linha</button>
+<button id="save">Salvar neste aparelho</button>
+<button id="load" class="secondary">Carregar dados salvos</button>
+<button id="clear" class="danger">Limpar formulário</button>
+<button id="print" class="secondary">Imprimir / salvar PDF</button>
+<button id="csv" class="secondary">Exportar CSV</button>
+</div>
+<div id="status" role="status">Os dados ainda não foram salvos.</div>
+<p class="hint no-print">Primeira versão: os dados ficam neste navegador e aparelho. Ainda não há sincronização entre celulares. Evite limpar os dados do navegador antes de exportar ou guardar seus registros.</p>
 </section>
 </main>
-
 <script>
-const $ = id => document.getElementById(id);
-const qtdLinhas = 12;
-const campos = ["data","linha","turno","responsavel","produto","lote"];
-const chave = "gestaoVista_v1";
-
-function criarLinhas() {
-  const tbody = $("linhas");
-  for (let i=0;i<qtdLinhas;i++) {
+const $=id=>document.getElementById(id);
+const INITIAL_ROWS=3;
+const STORAGE_KEY="gestao-a-vista-turno-v1";
+const rowBody=$("rows");
+function makeRow(){
     const tr=document.createElement("tr");
     tr.innerHTML=`
       <td>${i+1}</td>
-      <td><input class="hora" type="time" aria-label="Início ${i+1}"></td>
-      <td><input class="hora" type="time" aria-label="Fim ${i+1}"></td>
-      <td><input class="numero meta" type="number" min="0" step="any" value="0" aria-label="Meta ${i+1}"></td>
-      <td><input class="numero real" type="number" min="0" step="any" value="0" aria-label="Realizado ${i+1}"></td>
-      <td class="resultado dif">0</td>
-      <td class="resultado acum">0</td>
-      <td><input class="motivo" placeholder="Motivo" aria-label="Motivo da parada ${i+1}"></td>
-      <td><input class="numero parada" type="number" min="0" step="any" value="0" aria-label="Minutos parados ${i+1}"></td>`;
-    tbody.appendChild(tr);
+      <td><input class="time start" type="time" aria-label="Início intervalo ${i+1}"></td>
+      <td><input class="time end" type="time" aria-label="Fim intervalo ${i+1}"></td>
+      <td><input class="code" type="text" inputmode="numeric" placeholder="Código" aria-label="Código do produto intervalo ${i+1}"></td>
+      <td><input class="num planned" type="number" min="0" step="any" value="" placeholder="0" aria-label="Planejado intervalo ${i+1}"></td>
+      <td><input class="num actual" type="number" min="0" step="any" value="" placeholder="0" aria-label="Realizado intervalo ${i+1}"></td>
+      <td class="delta neutral">—</td>
+      <td class="accum neutral">—</td>
+      <td><input class="reason" type="text" placeholder="Motivo" aria-label="Motivo da parada intervalo ${i+1}"></td>
+      <td><input class="num downtime" type="number" min="0" step="1" value="" placeholder="0" aria-label="Tempo parado em minutos intervalo ${i+1}"></td>
+      <td><input class="num hc" type="number" min="0" step="1" value="" placeholder="0" aria-label="Quantidade de colaboradores intervalo ${i+1}"></td>`;
+    rowBody.appendChild(tr);
+    renumberRows();
+}
+function renumberRows(){
+  [...rowBody.querySelectorAll("tr")].forEach((tr,i)=>{tr.cells[0].textContent=i+1;});
+}
+function addRow(){
+  makeRow();
+  calculate();
+}
+function removeRow(){
+  const rows=[...rowBody.querySelectorAll("tr")];
+  if(rows.length<=1){$("status").textContent="É necessário manter pelo menos uma linha.";return;}
+  const last=rows[rows.length-1];
+  const hasData=[...last.querySelectorAll("input")].some(input=>input.value.trim()!=="");
+  if(hasData && !confirm("A última linha contém dados. Deseja removê-la?"))return;
+  last.remove();
+  renumberRows();
+  calculate();
+}
+const val=(tr,selector)=>tr.querySelector(selector).value.trim();
+const n=v=>{const x=Number(v);return v===""||!Number.isFinite(x)?0:x};
+const fmt=x=>x.toLocaleString("pt-BR",{maximumFractionDigits:2});
+function calculate(){
+  let planTotal=0,actualTotal=0,downTotal=0,stopCount=0,previousCode="",acc=0;
+  const products=new Map();
+  const trs=[...rowBody.querySelectorAll("tr")];
+  trs.forEach(tr=>{
+    const rowHasData=[...tr.querySelectorAll("input")].some(input=>input.value.trim()!=="");
+    tr.classList.toggle("empty-row",!rowHasData);
+    const code=val(tr,".code");
+    const plan=n(val(tr,".planned"));
+    const actual=n(val(tr,".actual"));
+    const downtime=n(val(tr,".downtime"));
+    const reason=val(tr,".reason");
+    const delta=actual-plan;
+    planTotal+=plan;actualTotal+=actual;downTotal+=downtime;
+    if(downtime>0||reason)stopCount++;
+    const deltaCell=tr.querySelector(".delta");
+    const accumCell=tr.querySelector(".accum");
+    if(code && (val(tr,".planned")!==""||val(tr,".actual")!=="")){
+      if(code!==previousCode)acc=0;
+      acc+=actual;
+      deltaCell.textContent=fmt(delta);
+      deltaCell.className="delta "+(delta>=0?"good":"bad");
+      accumCell.textContent=fmt(acc);
+      accumCell.className="accum neutral";
+      previousCode=code;
+      if(!products.has(code))products.set(code,{plan:0,actual:0,stops:0,downtime:0});
+      const p=products.get(code);p.plan+=plan;p.actual+=actual;p.downtime+=downtime;
+      if(downtime>0||reason)p.stops++;
+    }else{
+      deltaCell.textContent="—";deltaCell.className="delta neutral";
+      accumCell.textContent="—";accumCell.className="accum neutral";
+      if(code && products.has(code)){const p=products.get(code);p.downtime+=downtime;}
+      // An empty row doesn't reset the product accumulator.
+    }
+  });
+  $("sumPlan").textContent=fmt(planTotal);
+  $("sumActual").textContent=fmt(actualTotal);
+  $("sumDelta").textContent=fmt(actualTotal-planTotal);
+  $("sumDelta").style.background=actualTotal>=planTotal?"var(--green)":"var(--red)";
+  $("sumRate").textContent=(planTotal?actualTotal/planTotal*100:0).toLocaleString("pt-BR",{maximumFractionDigits:1})+"%";
+  $("sumDowntime").textContent=fmt(downTotal)+" min";
+  $("sumStops").textContent=fmt(stopCount);
+  const box=$("byProduct");box.innerHTML="";
+  if(products.size===0){box.innerHTML='<p class="hint">Os produtos aparecerão aqui conforme os códigos forem preenchidos.</p>';return;}
+  for(const [code,p] of products){
+    const card=document.createElement("article");card.className="product-card";
+    const rate=p.plan?p.actual/p.plan*100:0;
+    card.innerHTML=`<h3>Produto: ${escapeHtml(code)}</h3>
+      <p>Planejado: <strong>${fmt(p.plan)}</strong></p>
+      <p>Realizado: <strong>${fmt(p.actual)}</strong></p>
+      <p>Delta: <strong>${fmt(p.actual-p.plan)}</strong></p>
+      <p>Atingimento: <strong>${rate.toLocaleString("pt-BR",{maximumFractionDigits:1})}%</strong></p>
+      <p>Tempo parado associado: <strong>${fmt(p.downtime)} min</strong></p>`;
+    box.appendChild(card);
   }
 }
-
-function numero(v) {
-  const n=Number(v);
-  return Number.isFinite(n)?n:0;
+function escapeHtml(s){return s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function collect(){
+  return {header:{date:$("date").value,line:$("line").value,shift:$("shift").value,responsible:$("responsible").value},
+    rows:[...rowBody.querySelectorAll("tr")].map(tr=>({
+      start:val(tr,".start"),end:val(tr,".end"),code:val(tr,".code"),
+      planned:val(tr,".planned"),actual:val(tr,".actual"),reason:val(tr,".reason"),
+      downtime:val(tr,".downtime"),hc:val(tr,".hc")
+    }))};
 }
-function formatar(n) {
-  return n.toLocaleString("pt-BR",{maximumFractionDigits:2});
-}
-function calcular() {
-  let meta=0,real=0,paradas=0,acum=0;
-  document.querySelectorAll("#linhas tr").forEach(tr=>{
-    const m=numero(tr.querySelector(".meta").value);
-    const r=numero(tr.querySelector(".real").value);
-    const p=numero(tr.querySelector(".parada").value);
-    const d=r-m;
-    meta+=m; real+=r; paradas+=p; acum+=r;
-    const dif=tr.querySelector(".dif");
-    dif.textContent=formatar(d);
-    dif.className="resultado dif "+(d>=0?"bom":"ruim");
-    tr.querySelector(".acum").textContent=formatar(acum);
+function fill(data){
+  if(!data)return;
+  $("date").value=data.header?.date||"";
+  $("line").value=data.header?.line||"";
+  $("shift").value=data.header?.shift||"";
+  $("responsible").value=data.header?.responsible||"";
+  while(rowBody.querySelectorAll("tr").length < (data.rows?.length||INITIAL_ROWS))makeRow();
+  while(rowBody.querySelectorAll("tr").length > (data.rows?.length||INITIAL_ROWS))rowBody.lastElementChild.remove();
+  const trs=[...rowBody.querySelectorAll("tr")];
+  trs.forEach((tr,i)=>{
+    const r=data.rows?.[i]||{};
+    for(const [sel,key] of [[".start","start"],[".end","end"],[".code","code"],[".planned","planned"],[".actual","actual"],[".reason","reason"],[".downtime","downtime"],[".hc","hc"]])tr.querySelector(sel).value=r[key]??"";
   });
-  const d=real-meta;
-  $("totalMeta").textContent=formatar(meta);
-  $("totalReal").textContent=formatar(real);
-  $("totalDif").textContent=formatar(d);
-  $("totalAcum").textContent=formatar(real);
-  $("totalParada").textContent=formatar(paradas);
-  $("rMeta").textContent=formatar(meta);
-  $("rReal").textContent=formatar(real);
-  $("rDif").textContent=formatar(d);
-  $("rDif").style.background=d>=0?"var(--verde)":"var(--vermelho)";
-  $("rPerc").textContent=(meta>0?(real/meta*100):0).toLocaleString("pt-BR",{maximumFractionDigits:1})+"%";
+  calculate();
 }
-
-function coletar() {
-  return {
-    cabecalho:Object.fromEntries(campos.map(id=>[id,$(id).value])),
-    linhas:[...document.querySelectorAll("#linhas tr")].map(tr=>({
-      inicio:tr.cells[1].querySelector("input").value,
-      fim:tr.cells[2].querySelector("input").value,
-      meta:tr.querySelector(".meta").value,
-      real:tr.querySelector(".real").value,
-      motivo:tr.querySelector(".motivo").value,
-      parada:tr.querySelector(".parada").value
-    }))
-  };
+function save(){
+  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(collect()));$("status").textContent="Salvo neste aparelho e navegador.";}
+  catch(e){$("status").textContent="Não foi possível salvar. Exporte os dados para não perdê-los.";}
 }
-function preencher(d) {
-  if(!d)return;
-  campos.forEach(id=>$(id).value=d.cabecalho?.[id]||"");
-  document.querySelectorAll("#linhas tr").forEach((tr,i)=>{
-    const l=d.linhas?.[i]||{};
-    tr.cells[1].querySelector("input").value=l.inicio||"";
-    tr.cells[2].querySelector("input").value=l.fim||"";
-    tr.querySelector(".meta").value=l.meta??"0";
-    tr.querySelector(".real").value=l.real??"0";
-    tr.querySelector(".motivo").value=l.motivo||"";
-    tr.querySelector(".parada").value=l.parada??"0";
+function load(){
+  try{const raw=localStorage.getItem(STORAGE_KEY);if(!raw){$("status").textContent="Não há dados salvos neste navegador.";return;}fill(JSON.parse(raw));$("status").textContent="Dados salvos carregados.";}
+  catch(e){$("status").textContent="Não foi possível carregar os dados salvos.";}
+}
+function exportCsv(){
+  const d=collect();
+  const out=[["GESTÃO À VISTA — CONTROLE DE PRODUÇÃO DIÁRIO"],["Data",d.header.date,"Linha",d.header.line,"Turno",d.header.shift,"Responsável",d.header.responsible],[],
+    ["#","Início","Fim","Código do produto","Planejado","Realizado","Delta","Acumulado do produto","Motivo da parada","Tempo parado (min)","Qtd. HC"]];
+  let prev="",acc=0;
+  d.rows.forEach((r,i)=>{
+    let delta="",ac="";
+    if(r.code&&(r.planned!==""||r.actual!=="")){if(r.code!==prev)acc=0;acc+=n(r.actual);prev=r.code;delta=n(r.actual)-n(r.planned);ac=acc;}
+    out.push([i+1,r.start,r.end,r.code,r.planned,r.actual,delta,ac,r.reason,r.downtime,r.hc]);
   });
-  calcular();
+  const csv=out.map(row=>row.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(";")).join("\r\n");
+  const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8"});
+  const url=URL.createObjectURL(blob);const a=document.createElement("a");
+  a.href=url;a.download=`gestao-a-vista-${d.header.date||"turno"}.csv`;a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
-function salvar() {
-  try {
-    localStorage.setItem(chave,JSON.stringify(coletar()));
-    $("estado").textContent="Registros salvos neste aparelho.";
-  } catch(e) {
-    $("estado").textContent="Não foi possível salvar. Verifique o espaço disponível no navegador.";
-  }
-}
-function csvExportar() {
-  const d=coletar();
-  const linhas=[
-    ["Gestão à Vista"],
-    campos.map(id=>$(id).labels?.[0]?.innerText||id),
-    campos.map(id=>d.cabecalho[id]),
-    [],
-    ["Intervalo","Início","Fim","Meta","Realizado","Diferença","Acumulado","Motivo da parada","Parada (min)"]
-  ];
-  let acumulado=0;
-  d.linhas.forEach((l,i)=>{
-    acumulado+=numero(l.real);
-    linhas.push([i+1,l.inicio,l.fim,l.meta,l.real,numero(l.real)-numero(l.meta),acumulado,l.motivo,l.parada]);
-  });
-  const csv=linhas.map(l=>l.map(v=>'"'+String(v??"").replace(/"/g,'""')+'"').join(";")).join("\r\n");
-  const blob=new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url;a.download="gestao-a-vista.csv";a.click();
-  URL.revokeObjectURL(url);
-}
-criarLinhas();
-$("data").value=new Date().toLocaleDateString("en-CA");
-try {
-  const salvo=localStorage.getItem(chave);
-  if(salvo) preencher(JSON.parse(salvo));
-} catch(e) {
-  $("estado").textContent="Não foi possível carregar o último registro salvo.";
-}
-document.addEventListener("input",e=>{
-  if(e.target.matches("input"))calcular();
+for(let i=0;i<INITIAL_ROWS;i++)makeRow();
+$("date").value=new Date().toLocaleDateString("en-CA");
+document.addEventListener("input",e=>{if(e.target.matches("input,select"))calculate();});
+$("addRow").addEventListener("click",addRow);
+$("removeRow").addEventListener("click",removeRow);
+$("save").addEventListener("click",save);
+$("load").addEventListener("click",load);
+$("clear").addEventListener("click",()=>{
+  if(!confirm("Limpar os campos da tela? Os dados salvos anteriormente continuarão guardados até serem substituídos."))return;
+  $("line").value="";$("shift").value="";$("responsible").value="";
+  [...rowBody.querySelectorAll("tr")].forEach(tr=>tr.querySelectorAll("input").forEach(inp=>inp.value=""));
+  calculate();$("status").textContent="Formulário limpo. Os dados anteriores ainda estão salvos.";
 });
-$("salvar").addEventListener("click",salvar);
-$("limpar").addEventListener("click",()=>{
-  if(!confirm("Limpar o formulário? Os dados salvos anteriormente não serão apagados."))return;
-  campos.forEach(id=>$(id).value="");
-  $("data").value=new Date().toLocaleDateString("en-CA");
-  document.querySelectorAll("#linhas tr").forEach(tr=>{
-    tr.cells[1].querySelector("input").value="";
-    tr.cells[2].querySelector("input").value="";
-    tr.querySelector(".meta").value="0";
-    tr.querySelector(".real").value="0";
-    tr.querySelector(".motivo").value="";
-    tr.querySelector(".parada").value="0";
-  });
-  calcular();
-});
-$("imprimir").addEventListener("click",()=>window.print());
-$("csv").addEventListener("click",csvExportar);
-calcular();
+$("print").addEventListener("click",()=>window.print());
+$("csv").addEventListener("click",exportCsv);
+calculate();
 </script>
 </body>
-  </html>
-  
+</html>
