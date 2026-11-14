@@ -143,8 +143,8 @@ function makeRow(){
     const rowNumber=rowBody.querySelectorAll("tr").length+1;
     tr.innerHTML=`
       <td data-label="Intervalo">${rowNumber}</td>
-      <td data-label="Início"><input class="time start" type="text" inputmode="numeric" placeholder="06:00" maxlength="5" pattern="[0-2][0-9]:[0-5][0-9]" aria-label="Início intervalo ${rowNumber}"></td>
-      <td data-label="Fim"><input class="time end" type="text" inputmode="numeric" placeholder="07:00" maxlength="5" pattern="[0-2][0-9]:[0-5][0-9]" aria-label="Fim intervalo ${rowNumber}"></td>
+      <td data-label="Início"><input class="time start" type="text" inputmode="numeric" placeholder="0600" maxlength="4" pattern="[0-9]{4}" aria-label="Início intervalo ${rowNumber}"></td>
+      <td data-label="Fim"><input class="time end" type="text" inputmode="numeric" placeholder="0700" maxlength="4" pattern="[0-9]{4}" aria-label="Fim intervalo ${rowNumber}"></td>
       <td data-label="Código do produto"><input class="code" type="text" inputmode="numeric" placeholder="Código" aria-label="Código do produto intervalo ${rowNumber}"></td>
       <td data-label="Planejado"><input class="num planned" type="number" min="0" step="any" value="" placeholder="0" aria-label="Planejado intervalo ${rowNumber}"></td>
       <td data-label="Realizado"><input class="num actual" type="number" min="0" step="any" value="" placeholder="0" aria-label="Realizado intervalo ${rowNumber}"></td>
@@ -174,6 +174,20 @@ function removeRow(){
   renumberRows();
   calculate();
   save(true);
+}
+function formatTimeInput(input){
+  const digits=input.value.replace(/\\D/g,"").slice(0,4);
+  if(digits.length===4){
+    const hours=Number(digits.slice(0,2)), minutes=Number(digits.slice(2,4));
+    if(hours<=23 && minutes<=59){input.value=digits.slice(0,2)+":"+digits.slice(2,4);}
+    else {input.value=digits;}
+  } else if(digits.length===3){
+    const hours=Number(digits.slice(0,1)), minutes=Number(digits.slice(1,3));
+    if(hours<=23 && minutes<=59){input.value="0"+digits.slice(0,1)+":"+digits.slice(1,3);}
+    else {input.value=digits;}
+  } else {
+    input.value=digits;
+  }
 }
 const val=(tr,selector)=>tr.querySelector(selector).value.trim();
 const n=v=>{const x=Number(v);return v===""||!Number.isFinite(x)?0:x};
@@ -296,6 +310,15 @@ try{
 document.addEventListener("input",e=>{
   if(e.target.matches("input,select")){calculate();save(true);}
 });
+document.addEventListener("input",e=>{
+  if(e.target.matches("input.time")) {
+    const raw=e.target.value;
+    if(!raw.includes(":")) e.target.value=raw.replace(/\\D/g,"").slice(0,4);
+  }
+});
+document.addEventListener("blur",e=>{
+  if(e.target.matches("input.time")) {formatTimeInput(e.target);calculate();save(true);}
+},true);
 document.addEventListener("change",e=>{
   if(e.target.matches("input,select"))save(true);
 });
