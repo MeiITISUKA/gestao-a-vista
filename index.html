@@ -20,11 +20,11 @@ label{font-size:12px;font-weight:700;display:block}
 input,select,button{font:inherit}
 input,select{width:100%;min-width:0;margin-top:5px;padding:9px;border:1px solid #b9c6d1;border-radius:5px;background:white;color:var(--ink)}
 .table-wrap{overflow:auto;border-radius:6px}
-table{border-collapse:collapse;width:100%;min-width:1080px;font-size:12px}
+table{border-collapse:collapse;width:100%;min-width:0;font-size:12px}
 th,td{border:1px solid var(--line);padding:6px;text-align:center}
 th{background:var(--navy);color:white;white-space:nowrap}
-td input{margin:0;padding:8px 5px;border-radius:4px}
-td .time{min-width:92px}td .code{min-width:120px}td .num{min-width:80px}td .reason{min-width:145px}
+td input{margin:0;padding:8px 5px;border-radius:4px;width:100%;min-width:0}
+td .time{min-width:0}td .code{min-width:0}td .num{min-width:0}td .reason{min-width:0}
 .delta,.accum{font-weight:700;white-space:nowrap}
 .good{background:var(--green)}.bad{background:var(--red)}.neutral{background:#f5f7f9}
 .summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px}
@@ -42,9 +42,26 @@ button.danger{background:#a73333}
 button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid #2c81b8;outline-offset:2px}
 .hint{font-size:12px;color:#5b6c79;line-height:1.45}
 #status{font-size:12px;color:#526273;margin-top:10px;min-height:15px}
-@media(max-width:760px){main{padding:8px}.panel{padding:10px}.fields{grid-template-columns:repeat(2,minmax(0,1fr))}.summary{grid-template-columns:repeat(2,minmax(0,1fr))}header h1{font-size:21px}}
+@media(max-width:760px){
+      main{padding:8px}.panel{padding:10px}
+      .fields{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+      header h1{font-size:21px}
+      .table-wrap{overflow:visible}
+      table,thead,tbody,tr,th,td{display:block;width:100%;min-width:0}
+      thead{display:none}
+      tbody{display:grid;gap:10px}
+      tbody tr{border:1px solid var(--line);border-radius:8px;padding:8px;background:#fff}
+      tbody td{border:0;display:grid;grid-template-columns:minmax(110px,42%) minmax(0,1fr);gap:8px;align-items:center;text-align:left;padding:5px 0}
+      tbody td:first-child{display:block;background:var(--navy);color:#fff;margin:-8px -8px 6px;padding:8px;border-radius:6px 6px 0 0;font-weight:bold}
+      tbody td:first-child::before{content:"Intervalo"}
+      tbody td::before{content:attr(data-label);font-size:11px;font-weight:700;color:#435767}
+      tbody td:first-child input{width:100%}
+      td input{font-size:14px}
+      .actions button{flex:1 1 145px}
+    }
 @media(max-width:380px){.fields{grid-template-columns:1fr}.metric strong{font-size:19px}}
-@media print{body{background:#fff}#rows tr.empty-row{display:none}main{max-width:none;padding:0}.panel{box-shadow:none;break-inside:avoid}.actions,#status,.hint.no-print{display:none}input,select{border:0;padding:2px;appearance:none}header{print-color-adjust:exact;-webkit-print-color-adjust:exact}th{print-color-adjust:exact;-webkit-print-color-adjust:exact}table{min-width:0;font-size:9px}td,th{padding:3px}}
+@media print{body{background:#fff}#rows tr.empty-row{display:none}main{max-width:none;padding:0}.table-wrap{overflow:visible}table,thead,tbody,tr,th,td{display:table-cell;width:auto}table{display:table;width:100%;min-width:0}thead{display:table-header-group}tbody{display:table-row-group}tr{display:table-row}th{display:table-cell}td{display:table-cell}tbody td::before{content:none}tbody td:first-child{display:table-cell;background:transparent;color:inherit;margin:0;padding:3px;border-radius:0}.panel{box-shadow:none;break-inside:avoid}.actions,#status,.hint.no-print{display:none}input,select{border:0;padding:2px;appearance:none}header{print-color-adjust:exact;-webkit-print-color-adjust:exact}th{print-color-adjust:exact;-webkit-print-color-adjust:exact}table{min-width:0;font-size:9px}td,th{padding:3px}}
 </style>
 </head>
 <body>
@@ -89,14 +106,11 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 <div class="actions">
 <button id="addRow">+ Adicionar linha</button>
 <button id="removeRow" class="secondary">− Remover última linha</button>
-<button id="save">Salvar neste aparelho</button>
-<button id="load" class="secondary">Carregar dados salvos</button>
 <button id="clear" class="danger">Limpar formulário</button>
-<button id="print" class="secondary">Imprimir / salvar PDF</button>
-<button id="csv" class="secondary">Exportar CSV</button>
+<button id="print" class="secondary">Salvar em PDF</button>
 </div>
 <div id="status" role="status">Os dados ainda não foram salvos.</div>
-<p class="hint no-print">Primeira versão: os dados ficam neste navegador e aparelho. Ainda não há sincronização entre celulares. Evite limpar os dados do navegador antes de exportar ou guardar seus registros.</p>
+<p class="hint no-print">Os dados são salvos automaticamente neste navegador e aparelho. Ainda não há sincronização entre celulares. Para gerar o documento, toque em “Salvar em PDF” e escolha “Salvar como PDF” na janela de impressão do celular.</p>
 </section>
 </main>
 <script>
@@ -108,17 +122,17 @@ function makeRow(){
     const tr=document.createElement("tr");
     const rowNumber=rowBody.querySelectorAll("tr").length+1;
     tr.innerHTML=`
-      <td>${rowNumber}</td>
-      <td><input class="time start" type="time" aria-label="Início intervalo ${rowNumber}"></td>
-      <td><input class="time end" type="time" aria-label="Fim intervalo ${rowNumber}"></td>
-      <td><input class="code" type="text" inputmode="numeric" placeholder="Código" aria-label="Código do produto intervalo ${rowNumber}"></td>
-      <td><input class="num planned" type="number" min="0" step="any" value="" placeholder="0" aria-label="Planejado intervalo ${rowNumber}"></td>
-      <td><input class="num actual" type="number" min="0" step="any" value="" placeholder="0" aria-label="Realizado intervalo ${rowNumber}"></td>
-      <td class="delta neutral">—</td>
-      <td class="accum neutral">—</td>
-      <td><input class="reason" type="text" placeholder="Motivo" aria-label="Motivo da parada intervalo ${rowNumber}"></td>
-      <td><input class="num downtime" type="number" min="0" step="1" value="" placeholder="0" aria-label="Tempo parado em minutos intervalo ${rowNumber}"></td>
-      <td><input class="num hc" type="number" min="0" step="1" value="" placeholder="0" aria-label="Quantidade de colaboradores intervalo ${rowNumber}"></td>`;
+      <td data-label="Intervalo">${rowNumber}</td>
+      <td data-label="Início"><input class="time start" type="text" inputmode="numeric" placeholder="06:00" maxlength="5" pattern="[0-2][0-9]:[0-5][0-9]" aria-label="Início intervalo ${rowNumber}"></td>
+      <td data-label="Fim"><input class="time end" type="text" inputmode="numeric" placeholder="07:00" maxlength="5" pattern="[0-2][0-9]:[0-5][0-9]" aria-label="Fim intervalo ${rowNumber}"></td>
+      <td data-label="Código do produto"><input class="code" type="text" inputmode="numeric" placeholder="Código" aria-label="Código do produto intervalo ${rowNumber}"></td>
+      <td data-label="Planejado"><input class="num planned" type="number" min="0" step="any" value="" placeholder="0" aria-label="Planejado intervalo ${rowNumber}"></td>
+      <td data-label="Realizado"><input class="num actual" type="number" min="0" step="any" value="" placeholder="0" aria-label="Realizado intervalo ${rowNumber}"></td>
+      <td data-label="Delta" class="delta neutral">—</td>
+      <td data-label="Acumulado do produto" class="accum neutral">—</td>
+      <td data-label="Motivo da parada"><input class="reason" type="text" placeholder="Motivo" aria-label="Motivo da parada intervalo ${rowNumber}"></td>
+      <td data-label="Tempo parado (min)"><input class="num downtime" type="number" min="0" step="1" value="" placeholder="0" aria-label="Tempo parado em minutos intervalo ${rowNumber}"></td>
+      <td data-label="Qtd. HC"><input class="num hc" type="number" min="0" step="1" value="" placeholder="0" aria-label="Quantidade de colaboradores intervalo ${rowNumber}"></td>`;
     rowBody.appendChild(tr);
     renumberRows();
 }
@@ -267,8 +281,6 @@ document.addEventListener("change",e=>{
 });
 $("addRow").addEventListener("click",addRow);
 $("removeRow").addEventListener("click",removeRow);
-$("save").addEventListener("click",save);
-$("load").addEventListener("click",load);
 $("clear").addEventListener("click",()=>{
   if(!confirm("Limpar os campos da tela? Os dados salvos anteriormente continuarão guardados até serem substituídos."))return;
   $("line").value="";$("shift").value="";$("responsible").value="";
@@ -277,7 +289,6 @@ $("clear").addEventListener("click",()=>{
   calculate();save(true);$("status").textContent="Formulário limpo e estado atualizado neste aparelho.";
 });
 $("print").addEventListener("click",()=>window.print());
-$("csv").addEventListener("click",exportCsv);
 calculate();
 </script>
 </body>
