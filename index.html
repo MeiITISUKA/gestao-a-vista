@@ -106,18 +106,19 @@ const STORAGE_KEY="gestao-a-vista-turno-v1";
 const rowBody=$("rows");
 function makeRow(){
     const tr=document.createElement("tr");
+    const rowNumber=rowBody.querySelectorAll("tr").length+1;
     tr.innerHTML=`
-      <td>${i+1}</td>
-      <td><input class="time start" type="time" aria-label="Início intervalo ${i+1}"></td>
-      <td><input class="time end" type="time" aria-label="Fim intervalo ${i+1}"></td>
-      <td><input class="code" type="text" inputmode="numeric" placeholder="Código" aria-label="Código do produto intervalo ${i+1}"></td>
-      <td><input class="num planned" type="number" min="0" step="any" value="" placeholder="0" aria-label="Planejado intervalo ${i+1}"></td>
-      <td><input class="num actual" type="number" min="0" step="any" value="" placeholder="0" aria-label="Realizado intervalo ${i+1}"></td>
+      <td>${rowNumber}</td>
+      <td><input class="time start" type="time" aria-label="Início intervalo ${rowNumber}"></td>
+      <td><input class="time end" type="time" aria-label="Fim intervalo ${rowNumber}"></td>
+      <td><input class="code" type="text" inputmode="numeric" placeholder="Código" aria-label="Código do produto intervalo ${rowNumber}"></td>
+      <td><input class="num planned" type="number" min="0" step="any" value="" placeholder="0" aria-label="Planejado intervalo ${rowNumber}"></td>
+      <td><input class="num actual" type="number" min="0" step="any" value="" placeholder="0" aria-label="Realizado intervalo ${rowNumber}"></td>
       <td class="delta neutral">—</td>
       <td class="accum neutral">—</td>
-      <td><input class="reason" type="text" placeholder="Motivo" aria-label="Motivo da parada intervalo ${i+1}"></td>
-      <td><input class="num downtime" type="number" min="0" step="1" value="" placeholder="0" aria-label="Tempo parado em minutos intervalo ${i+1}"></td>
-      <td><input class="num hc" type="number" min="0" step="1" value="" placeholder="0" aria-label="Quantidade de colaboradores intervalo ${i+1}"></td>`;
+      <td><input class="reason" type="text" placeholder="Motivo" aria-label="Motivo da parada intervalo ${rowNumber}"></td>
+      <td><input class="num downtime" type="number" min="0" step="1" value="" placeholder="0" aria-label="Tempo parado em minutos intervalo ${rowNumber}"></td>
+      <td><input class="num hc" type="number" min="0" step="1" value="" placeholder="0" aria-label="Quantidade de colaboradores intervalo ${rowNumber}"></td>`;
     rowBody.appendChild(tr);
     renumberRows();
 }
@@ -127,6 +128,7 @@ function renumberRows(){
 function addRow(){
   makeRow();
   calculate();
+  save(true);
 }
 function removeRow(){
   const rows=[...rowBody.querySelectorAll("tr")];
@@ -137,6 +139,7 @@ function removeRow(){
   last.remove();
   renumberRows();
   calculate();
+  save(true);
 }
 const val=(tr,selector)=>tr.querySelector(selector).value.trim();
 const n=v=>{const x=Number(v);return v===""||!Number.isFinite(x)?0:x};
@@ -221,9 +224,13 @@ function fill(data){
   });
   calculate();
 }
-function save(){
-  try{localStorage.setItem(STORAGE_KEY,JSON.stringify(collect()));$("status").textContent="Salvo neste aparelho e navegador.";}
-  catch(e){$("status").textContent="Não foi possível salvar. Exporte os dados para não perdê-los.";}
+function save(silent=false){
+  try{
+    localStorage.setItem(STORAGE_KEY,JSON.stringify(collect()));
+    if(!silent)$("status").textContent="Salvo neste aparelho e navegador.";
+  }catch(e){
+    $("status").textContent="Não foi possível salvar automaticamente. Exporte os dados para não perdê-los.";
+  }
 }
 function load(){
   try{const raw=localStorage.getItem(STORAGE_KEY);if(!raw){$("status").textContent="Não há dados salvos neste navegador.";return;}fill(JSON.parse(raw));$("status").textContent="Dados salvos carregados.";}
@@ -246,8 +253,18 @@ function exportCsv(){
   setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 for(let i=0;i<INITIAL_ROWS;i++)makeRow();
-$("date").value=new Date().toLocaleDateString("en-CA");
-document.addEventListener("input",e=>{if(e.target.matches("input,select"))calculate();});
+const today=new Date();
+$("date").value=new Date(today.getTime()-today.getTimezoneOffset()*60000).toISOString().slice(0,10);
+try{
+  const previous=localStorage.getItem(STORAGE_KEY);
+  if(previous){fill(JSON.parse(previous));$("status").textContent="Últimos dados recuperados automaticamente deste aparelho.";}
+}catch(e){$("status").textContent="Não foi possível recuperar os dados anteriores deste navegador.";}
+document.addEventListener("input",e=>{
+  if(e.target.matches("input,select")){calculate();save(true);}
+});
+document.addEventListener("change",e=>{
+  if(e.target.matches("input,select"))save(true);
+});
 $("addRow").addEventListener("click",addRow);
 $("removeRow").addEventListener("click",removeRow);
 $("save").addEventListener("click",save);
@@ -256,7 +273,8 @@ $("clear").addEventListener("click",()=>{
   if(!confirm("Limpar os campos da tela? Os dados salvos anteriormente continuarão guardados até serem substituídos."))return;
   $("line").value="";$("shift").value="";$("responsible").value="";
   [...rowBody.querySelectorAll("tr")].forEach(tr=>tr.querySelectorAll("input").forEach(inp=>inp.value=""));
-  calculate();$("status").textContent="Formulário limpo. Os dados anteriores ainda estão salvos.";
+  $("date").value=new Date(Date.now()-new Date().getTimezoneOffset()*60000).toISOString().slice(0,10);
+  calculate();save(true);$("status").textContent="Formulário limpo e estado atualizado neste aparelho.";
 });
 $("print").addEventListener("click",()=>window.print());
 $("csv").addEventListener("click",exportCsv);
