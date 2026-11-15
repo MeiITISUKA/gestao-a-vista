@@ -145,12 +145,12 @@ function makeRow(){
       <td data-label="Intervalo">${rowNumber}</td>
       <td data-label="Início"><input class="time start" type="text" inputmode="numeric" placeholder="0600" maxlength="4" pattern="[0-9]{4}" aria-label="Início intervalo ${rowNumber}"></td>
       <td data-label="Fim"><input class="time end" type="text" inputmode="numeric" placeholder="0700" maxlength="4" pattern="[0-9]{4}" aria-label="Fim intervalo ${rowNumber}"></td>
-      <td data-label="Código do produto"><input class="code" type="text" inputmode="numeric" placeholder="Código" aria-label="Código do produto intervalo ${rowNumber}"></td>
+      <td data-label="Código do produto"><input class="code" type="text" inputmode="text" autocapitalize="characters" placeholder="Código" aria-label="Código do produto intervalo ${rowNumber}"></td>
       <td data-label="Planejado"><input class="num planned" type="number" min="0" step="any" value="" placeholder="0" aria-label="Planejado intervalo ${rowNumber}"></td>
       <td data-label="Realizado"><input class="num actual" type="number" min="0" step="any" value="" placeholder="0" aria-label="Realizado intervalo ${rowNumber}"></td>
       <td data-label="Delta" class="delta neutral">—</td>
       <td data-label="Acumulado do produto" class="accum neutral">—</td>
-      <td data-label="Motivo da parada"><input class="reason" type="text" placeholder="Motivo" aria-label="Motivo da parada intervalo ${rowNumber}"></td>
+      <td data-label="Motivo da parada"><input class="reason" type="text" placeholder="" aria-label="Motivo da parada intervalo ${rowNumber}"></td>
       <td data-label="Tempo parado (min)"><input class="num downtime" type="number" min="0" step="1" value="" placeholder="0" aria-label="Tempo parado em minutos intervalo ${rowNumber}"></td>
       <td data-label="Qtd. HC"><input class="num hc" type="number" min="0" step="1" value="" placeholder="0" aria-label="Quantidade de colaboradores intervalo ${rowNumber}"></td>`;
     rowBody.appendChild(tr);
