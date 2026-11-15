@@ -57,29 +57,29 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
     }
 @media(max-width:380px){.fields{grid-template-columns:1fr}.metric strong{font-size:19px}}
 @media print{
-      @page{size:A4 landscape;margin:8mm}
-      body{background:#fff;font-size:9px}
-      header{padding:8px 10px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
-      header h1{font-size:17px}header p{font-size:9px}
+      @page{size:A4 landscape;margin:5mm}
+      body{background:#fff;font-size:11px}
+      header{padding:10px 12px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+      header h1{font-size:20px}header p{font-size:10px}
       main{max-width:none;padding:0}
-      .panel{box-shadow:none;border:0;border-radius:0;padding:6px;margin:0 0 6px;break-inside:avoid}
-      h2{font-size:12px;margin:0 0 5px}
-      .actions,#status,.hint.no-print{display:none!important}
-      .fields{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
-      input,select{border:0;padding:1px 2px;margin-top:1px;font-size:8px;appearance:none;background:transparent}
+      .panel{box-shadow:none;border:0;border-radius:0;padding:5px;margin:0 0 4px;break-inside:avoid}
+      h2{font-size:14px;margin:0 0 5px}
+      .actions,#status,.hint.no-print,#intervalHelp{display:none!important}
+      .fields{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+      input,select{border:0;padding:2px 3px;margin-top:1px;font-size:10px;appearance:none;background:transparent}
       .table-wrap{overflow:visible}
       table,thead,tbody,tr,th,td{display:table-cell;width:auto;min-width:0}
-      table{display:table;width:100%;min-width:0;font-size:8px;border-collapse:collapse}
+      table{display:table;width:100%;min-width:0;font-size:10px;border-collapse:collapse}
       thead{display:table-header-group}tbody{display:table-row-group}tr{display:table-row}
-      th,td{display:table-cell;padding:3px 2px}
+      th,td{display:table-cell;padding:4px 3px}
       th{print-color-adjust:exact;-webkit-print-color-adjust:exact}
-      td input{width:100%;min-width:0;padding:1px;font-size:8px}
+      td input{width:100%;min-width:0;padding:2px;font-size:10px}
       td .time,td .code,td .num,td .reason{min-width:0}
       #rows tr.empty-row{display:none}
-      .summary{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
-      .metric{padding:5px}.metric strong{font-size:13px;margin-top:2px}
-      .product-summary{grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}
-      .product-card{padding:5px}.product-card h3{font-size:9px;margin-bottom:3px}.product-card p{margin:2px 0}
+      .summary{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+      .metric{padding:6px}.metric strong{font-size:15px;margin-top:3px}
+      .product-summary{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+      .product-card{padding:6px}.product-card h3{font-size:11px;margin-bottom:4px}.product-card p{margin:3px 0;font-size:10px}
       tbody td::before{content:none!important}
     }
 </style>
@@ -98,7 +98,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid 
 </section>
 <section class="panel">
 <h2>Controle por intervalo</h2>
-<p class="hint">Comece com poucas linhas e use “Adicionar linha” conforme necessário. Linhas sem preenchimento não aparecem no PDF. O acumulado reinicia automaticamente quando o código do produto muda em relação à linha anterior preenchida. Os totais abaixo ficam separados por produto.</p>
+<p class="hint" id="intervalHelp">Comece com poucas linhas e use “Adicionar linha” conforme necessário. Linhas sem preenchimento não aparecem no PDF. O acumulado reinicia automaticamente quando o código do produto muda em relação à linha anterior preenchida. Os totais abaixo ficam separados por produto.</p>
 <div class="table-wrap">
 <table>
 <thead><tr><th>#</th><th>Início</th><th>Fim</th><th>Código do produto</th><th>Planejado</th><th>Realizado</th><th>Delta</th><th>Acumulado do produto</th><th>Motivo da parada</th><th>Tempo parado (min)</th><th>Qtd. HC</th></tr></thead>
