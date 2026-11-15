@@ -145,7 +145,7 @@ function makeRow(){
       <td data-label="Intervalo">${rowNumber}</td>
       <td data-label="Início"><input class="time start" type="text" inputmode="numeric" placeholder="0600" maxlength="4" pattern="[0-9]{4}" aria-label="Início intervalo ${rowNumber}"></td>
       <td data-label="Fim"><input class="time end" type="text" inputmode="numeric" placeholder="0700" maxlength="4" pattern="[0-9]{4}" aria-label="Fim intervalo ${rowNumber}"></td>
-      <td data-label="Código do produto"><input class="code" type="text" inputmode="text" autocapitalize="characters" placeholder="Código" aria-label="Código do produto intervalo ${rowNumber}"></td>
+      <td data-label="Código do produto"><input class="code" type="text" inputmode="text" autocapitalize="characters" style="text-transform:uppercase" placeholder="Código" aria-label="Código do produto intervalo ${rowNumber}"></td>
       <td data-label="Planejado"><input class="num planned" type="number" min="0" step="any" value="" placeholder="0" aria-label="Planejado intervalo ${rowNumber}"></td>
       <td data-label="Realizado"><input class="num actual" type="number" min="0" step="any" value="" placeholder="0" aria-label="Realizado intervalo ${rowNumber}"></td>
       <td data-label="Delta" class="delta neutral">—</td>
@@ -314,6 +314,15 @@ document.addEventListener("input",e=>{
   if(e.target.matches("input.time")) {
     const raw=e.target.value;
     if(!raw.includes(":")) e.target.value=raw.replace(/\\D/g,"").slice(0,4);
+  }
+  if(e.target.matches("input.code")) {
+    const start=e.target.selectionStart, end=e.target.selectionEnd;
+    const upper=e.target.value.toLocaleUpperCase("pt-BR");
+    if(e.target.value!==upper){
+      e.target.value=upper;
+      try{e.target.setSelectionRange(start,end);}catch(_){}
+    }
+    save(true);
   }
 });
 document.addEventListener("blur",e=>{
